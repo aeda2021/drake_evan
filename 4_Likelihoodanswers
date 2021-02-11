@@ -1,0 +1,91 @@
+# Q1: What do you expect a plot of the test statistic as a function of p to look like?
+# (Hint: when will the test statistic be the smallest? What would make it get bigger?)
+
+I expect that the graph will show a minimum value for the test statistic at the MLE value for p 
+(in this case, it is p.test = 0.2)
+
+# Q2: a) Plot the test statistic against possible values of p,
+#        and add a horizontal line at the critical value of the test statistic.
+#        (Hint: the function abline() can add lines to plots)
+#     b) Using your plot from (a), estimate the 95% CI for p. How did you get that estimate?
+
+## ~ [ YOU'RE CODE HERE ] ~ ##
+plot(p.test,chi)
+abline(1.92,0)
+Looks like the 95% range for p is ~ 0.1 to 0.4
+
+# Q3: a) What is the 95% CI?
+#     b) Plot the likelihood profile and 95% CIs for the proportion of sites occupied,
+#         based on the observation of 20 of 100 sites occupied
+L2 <- dbinom(20, 100, p.test)
+plot(p.test, L2, type = 'l')
+# CIs:
+abline(v = .149, lty = 2)
+abline(v = .259, lty = 2)
+
+# Q4: a) Desribe the difference between these three distributions
+#     b) Not thinking about the underlying mathematics of the chi-square function,
+#       but thinking about the likelihood ratio test,
+#       why does the test distribution behave as it does with more degrees of freedom?
+The distributions get wider as the degrees of freedom increase
+The more freedom you have to vary, the wider your margin of error on your estimates, hence a wider distribution.
+
+
+# Q5: Considering that the likelihood ratio test is only valid for nested models,
+#     define the p-value explicitly in the context of the question the likelihood ratio test asks
+#     and the null hypothesis being tested.
+#     (Hints: what is the definition of a p-value?
+#             In a likelihood ratio test, what is being observed? More specifically, what is the test statistic?
+#             What is the null hypothesis?)
+The null hypothesis of the test is that there is no difference between the two models being tested.
+A low p-value would indicate that there is, in fact, a difference. Therefore leading us to reject the null.
+So if we get a result indicating that there is no difference between two nested models, then that would tell
+me that nothing important has been removed from the larger model.
+
+# Complete the 3 models below to create an intercept-only model, a model with Sex as a predictor, and a third with Sex and Age both
+# (see ?titanic_train for explanations of variables)
+# (note that the only real difference from the lm() function is the added 'family' argument. Keep this mind for a little later on.)
+
+fm0 <- glm(Survived ~ 1, family = "binomial", data = titanic)
+fm1 <- glm(Survived ~ 1 + Sex, family = "binomial", data = titanic)
+fm2 <- glm(Survived ~ 1 + Sex + Age, family = "binomial", data = titanic)
+
+# Q6: Interpret this output:
+#     a) what does each chi-square statistic and p-value refer to?
+#     b) What null hypotheses are being tested?
+#     c) Which variable(s) offer(s) significant predictive power?
+The chi-square value compares the likelihood ratio of the two models in question, and the p-value is based on the critical value of that chi-square.
+The null hypothesis is that there is no difference between the two models being compared
+Sex offers significant predictive power
+
+# Here, choose three variables you think might have influenced probability of survival aboard the Titatnic,
+# and write a set of models that include variables alone and in combination. Also include a null (ie intercept-only) model.
+# Think carefully about each model:
+# Do each of these deserve to be in a model with each other? Is there reason to think some variables might interact?
+
+## ~ [ YOU'RE CODE HERE ] ~ ##
+  titanmod1<-glm(Survived ~ 1 + Fare, family = "binomial", data = titanic)
+  titanmod2<-glm(Survived ~ 1 + Sex, family = "binomial", data = titanic)
+  titanmodnull<-glm(Survived ~ 1, family = "binomial", data = titanic)
+  titanmod3<-glm(Survived ~ 1 + Age, family = "binomial", data = titanic)
+# Q8: How do you know these models are not nested?
+They do not contain subsets of the same parameters. They do not shar anything except the intercept
+
+# Q9: What is 'delta-AIC' and why is this more relevant than the raw AIC values?
+Delta AIC is the differenct in AIC score between the models in this dataset vs. the top model. It is more relevant because AIC is relative, not a standardized thing
+
+# Q10: Interpret your output - which model is best? Which variables most important?
+Out of my 4 models, the Sex model was the best.
+
+# Q11: a) Which distribution is the best?
+#      b) On what basis are we making this inference? That is, what are really comparing?
+#         (Think about the mathematical definition of likelihood, and how it is calculated.)
+The Poisson dist was best. I compared the AIC values, and the Poisson model was lower. AIC is inversely proportional to the likelihood, so the lower AIC means that the model is more likely.
+
+# Q12: Describe the difference between these approaches. What is my goal in each scenario?
+#      What questions am I asking, and what am I left with at the end?
+The goal in the first scenario is that you want to use whatever means you can to find a good fit for your data. So you dredge all ossible combos in order to do so. Then you are done. 
+In the second scenario, you are checking to see which variables appear in the top models most often, and then you will choose to focu on them in the future. The second scenario uses dredging as an advising tool.
+
+# Q13: Briefly, how might you interpret this? Which variables do you think are most important?
+I would say that the top variables are x10,x9,x7,x6,x5,x2
