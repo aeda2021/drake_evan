@@ -322,7 +322,7 @@ Note, this can also be written as, $$ Poisson(y_i|\lambda_i)$$ $$\lambda_i = e^{
 *Question*: Draw the Bayesian network of this model, and write out the mathematical probability statement. For priors, use normal(mean = 0, sd = 10) on the interecept and beta coefficient.
 
 ```{r Try it - data}
-crabs <- read.csv('../raw-data/8_crab_burrows.csv')
+crabs <- read.csv('8_crab_burrows.csv')
 crabs$salinity <- crabs$salinity - mean(crabs$salinity) # center on 0
 head(crabs)
 ```
@@ -451,7 +451,7 @@ datList.ticks <- list(
   x1 = ticks$forest, # forest area
   x2 = ticks$edge, # forest edge
   x3 = ticks$evergreen, # evergreen forest
-  site = ticks$site, # site
+  site = as.numeric(as.factor(ticks$site)), # site
   n.sites = length(unique(ticks$site))# number of sites
 )
 
@@ -465,7 +465,7 @@ Run the model:
 fm.ticks <- jags(
   data = datList.ticks,
   model.file = tick.mod,
-  inits = initial.values.ticks,
+  #inits = initial.values.ticks,
   parameters.to.save = c("b0","b1","b2","b3"),
   n.chains = 3,
   n.iter = 20000,
@@ -479,12 +479,14 @@ fm.ticks.dat <- as.data.frame(as.matrix(fm.ticks.mcmc))
 
 Run traceplots and Gelman's diagnostic:
 ```{r Try it- diagnostics, eval=F}
-
+traceplot(fm.ticks.mcmc)
+gelman.diag(fm.ticks.mcmc)
 ```
 
 Plot posteriors for EC occurrence, the effects of forest area, edge, and type, and the among-site variacne in EC occurrence. Give interpretable titles to your plots. If you want to transform the intercept from log-odds scale to probabilty, use the plogis() function.
 ```{r Try it - results, eval=F}
-
+sapply(1:ncol(fm.ticks.dat), function(x) {
+  plotPost(fm.ticks.dat[,x], main = colnames(fm.ticks.dat)[x])})
 ```
 
 *Question* Interpret these results. What was EC occupancy (I.e. probability of a plot testing positive)? Was there evidence for an effect of any of these variables? What would your general conclusions be?
