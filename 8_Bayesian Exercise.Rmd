@@ -424,8 +424,8 @@ Use dbern(p) to denote a Bernoulli process, and logit() for the logit transforma
 tick.mod <- function(){
   # Likelihood
   for(i in 1:N){
-    y[i] ~ dbern(1:137, prob = x[i])
-    x[i] = b[j][site[i]] + b1*x1[i] + b2*x2[i] + b3*x3[i]
+    y[i] ~ dbern(x[i])
+    logit(x[i]) = b[site[i]] + b1*x1[i] + b2*x2[i] + b3*x3[i]
   }
   ## Random intercepts:
    # Now we index across site-level means
