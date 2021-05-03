@@ -639,4 +639,4 @@ plot(res_pesu)
 
 
 #Make a table of all the results so I can see all of the parameter estimates together
-bat.mods=model.sel(buzz1B,act3,epfu5,labo2,laci4,lano4,luso4,nyhu1,pesu2)
+bat.mods=model.sel(buzz1B,act3,epfu5,labo2,laci4,lano3,luso4,nyhu1,pesu2)
